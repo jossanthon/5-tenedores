@@ -57,7 +57,6 @@ function screenOptions(route, color){
         default:
             break;
     }
-    console.log("resultado es "+iconName);
     return (
         <Icon type="material-community" name={iconName} size={22} color={color} />
     );
