@@ -1,19 +1,27 @@
-import React,{useState,useRef} from "react";
+import React,{useState,useEffect,useRef} from "react";
 import {StyleSheet,View, Text} from "react-native";
 import {Button} from "react-native-elements";
 import Toast from "react-native-easy-toast";
 import * as firebase from "firebase";
 import {createStackNavigator} from "@react-navigation/stack";
 import Loading from "../../components/Loading";
+import Infouser from "../../components/Account/InfoUser";
 
 // const Stack = createStackNavigator();
 export default function UserLogged(){
+    const [userInfo, setUserInfo]=useState(null);
     const [loading, setLoading]=useState(false);
     const [loadingText, setLoadingText]=useState(" ");
     const toastRef=useRef();
+    useEffect(() => {
+        (async () => {
+            const user= await firebase.auth().currentUser;
+            setUserInfo(user);
+        })();
+    }, []);
     return(
         <View style={styles.viewUserInfo}>
-            <Text>infouser</Text>
+            {userInfo && <Infouser userInfo={userInfo} toastRef={toastRef}/> }
             <Text>Account Options..</Text>
             <Button title="Cerrar Sesion"
                 buttonStyle={styles.btnCloseSession}
