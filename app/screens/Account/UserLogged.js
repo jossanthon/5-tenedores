@@ -5,7 +5,8 @@ import Toast from "react-native-easy-toast";
 import * as firebase from "firebase";
 import {createStackNavigator} from "@react-navigation/stack";
 import Loading from "../../components/Loading";
-import Infouser from "../../components/Account/InfoUser";
+import InfoUser from "../../components/Account/InfoUser";
+import AccountOptions from "../../components/Account/AccountOptions";
 
 // const Stack = createStackNavigator();
 export default function UserLogged(){
@@ -21,8 +22,10 @@ export default function UserLogged(){
     }, []);
     return(
         <View style={styles.viewUserInfo}>
-            {userInfo && <Infouser userInfo={userInfo} toastRef={toastRef}/> }
-            <Text>Account Options..</Text>
+            {userInfo && <InfoUser userInfo={userInfo} 
+                    toastRef={toastRef} setLoading={setLoading}
+                    setLoadingText={setLoadingText} /> }
+            <AccountOptions userInfo={userInfo} toastRef={toastRef} />
             <Button title="Cerrar Sesion"
                 buttonStyle={styles.btnCloseSession}
                 titleStyle={styles.btnCloseSessionText}

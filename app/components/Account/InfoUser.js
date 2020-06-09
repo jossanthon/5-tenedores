@@ -9,7 +9,7 @@ export default function InfoUser(props){
     // const {userInfo}=props;
     // console.log(props);
     const {
-        userInfo:{uid,photoUrl, displayName, email}, toastRef
+        userInfo:{uid,photoURL, displayName, email}, toastRef, setLoading, setLoadingText,
     }=props;
 
     const changeAvatar= async()=>{
@@ -27,20 +27,40 @@ export default function InfoUser(props){
             }else{
                 uploadImage(result.uri)
                 .then(()=>{
-                    console.log("Imagen subida");
+                    // console.log("Imagen subida");
+                    updaTePhotoUrl();
                 })
                 .catch((error)=>{
                     // console.log(error);
-                    toastRef.current.show("Error al actualizar el avatar");
+                    toastRef.current.show("Error al actualizar el avatar 1");
                 });
             }
         }
     }
     const uploadImage = async(uri)=>{
+        setLoadingText("Actualizando Avatar");
+        setLoading(true);
         const response= await fetch(uri);
         const blob = await response.blob();
         const ref = firebase.storage().ref().child(`avatar/${uid}`);
         return ref.put(blob);
+    };
+    const updaTePhotoUrl =()=>{
+        firebase
+            .storage()
+            .ref(`avatar/${uid}`)
+            .getDownloadURL()
+            .then(async (response)=>{
+                const update={
+                    photoURL: response,
+                };
+                await firebase.auth().currentUser.updateProfile(update);
+                setLoading(false);
+                // console.log("imagen actualizada" +photoUrl);
+            })
+            .catch(()=>{
+                toastRef.current.show("Error al actualizar el avatar");
+            });
     }
     return(
         <View style={styles.viewUserInfo}>
@@ -51,7 +71,7 @@ export default function InfoUser(props){
                 onEditPress={changeAvatar}
                 containerStyle={styles.userInfoAvatar}
                 source={
-                    photoUrl ? {uri: photoUrl} : require("../../../assets/img/avatar-default.jpg")
+                    photoURL ? {uri: photoURL} : require("../../../assets/img/avatar-default.jpg")
                 }
             />
             <View>
